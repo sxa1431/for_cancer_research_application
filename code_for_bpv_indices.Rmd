@@ -1,0 +1,50 @@
+
+```{r}
+
+df <- mri_1_5_combineddatafile_scott
+```
+
+
+```{r}
+#code for average real variability
+average <- rep(0,ncol(df))
+average <- setNames(average, rep(c('meanSBP',  'meanDBP', 'meanpulse'), (ncol(df)/3)))
+stdev <- rep(0,ncol(df))
+stdev <- setNames(stdev, rep(c('sdSBP', 'sdDBP', 'sdpulse'), (ncol(df)/3)))
+coefva <- rep(0,ncol(df))
+coefva <- setNames(coefva, rep(c('cvSBP', 'cvDBP', 'cvpulse'), (ncol(df)/3)))
+arv <- rep(0,ncol(df))
+arv <- setNames(arv, rep(c('arvSBP', 'arvDBP', 'arvpulse'), (ncol(df)/3)))
+
+dfcolumn <- 1
+for (h in df){
+  average[dfcolumn] = mean(h, na.rm = TRUE)
+  stdev[dfcolumn] = sd(h, na.rm = TRUE)
+  coefva[dfcolumn] = sd(h, na.rm = TRUE)/mean(h, na.rm = TRUE)
+  
+  sum_of_absolute_differences <- 0 
+  recording_number <- 1
+  h_new <- na.omit(h)
+  for (i in h_new[2:(length(h_new))]){
+    sum_of_absolute_differences = sum_of_absolute_differences + (abs(i - h_new[recording_number]))
+    recording_number = recording_number + 1
+  }
+  arv[dfcolumn] = sum_of_absolute_differences/length(h_new)
+  dfcolumn = dfcolumn +1
+}
+
+mean_df <- as.data.frame(average)
+sd_df <- as.data.frame(stdev)
+cov_df <- as.data.frame(coefva)
+arv_df <- as.data.frame(arv)
+print(average)
+print(stdev)
+print(coefva)
+print(arv)
+
+
+```
+```{r}
+
+```
+

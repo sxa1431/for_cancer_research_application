@@ -1,0 +1,17 @@
+```{r}
+library(ggplot2)
+```
+
+```{r}
+colnames(df)
+```
+```{r}
+ggplot(df)+
+  geom_point(aes(df$`Participant characteristics NLI`, df$`Average Real Variability SBP (mmHg) day`))
+```
+```{r}
+ggplot(df, aes(x = df$`Participant characteristics NLI`, y = df$`Average Real Variability SBP (mmHg) Total`)) +
+  geom_boxplot( color = "blue") +
+  labs(title = "Jitter Plot Example", x = "Injury Level", y = "ARV SBP TOTAL (mmHg)")
+```
+

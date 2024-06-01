@@ -1,0 +1,28 @@
+```{r}
+library(VIM)
+```
+
+```{r}
+X <- data.matrix(na.omit(MRI_SCI_001_D))
+```
+
+```{r}
+sd(X[,1])
+#need to do na.omit function to remove NA values and convert data frame to matrix to do analysis. 
+```
+
+```{r}
+?
+```
+```{r}
+install.packages("bp")
+```
+
+```{r}
+library(bp)
+```
+```{r}
+print(X)
+
+```
+

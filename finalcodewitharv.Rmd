@@ -1,0 +1,123 @@
+```{r}
+df <- COMBINED_24HRDATA_BTX_PIIR #THIS IS WHERE YOU NEED TO LOAD THE COMBINED DATA FILE FROM EXCEL, REPLACE ELIPSES WITH LOADED FILE NAME  
+```
+```{r}
+#CREATING A FUNCTION FOR CALCULATING ARV - WILL BE USED LATER 
+arv_function <- function(data) { # THE ONLY ARGUMENT IS THE SBP, DBP, OR PULSE COLUMN
+  
+  sum_of_absolute_differences <- 0 
+  recording_number <- 1
+  data_new <- na.omit(data)
+  for (i in data_new[2:(length(data_new))]){
+    sum_of_absolute_differences = sum_of_absolute_differences + (abs(i - data_new[recording_number]))
+    recording_number = recording_number + 1
+  }
+  return(sum_of_absolute_differences/length(data_new)) #ENSURES THE FUNCTION RETURNS THE OUTPUT - ARV
+}
+```
+
+
+```{r}
+library(dplyr) # LOADING DPLYR PACKAGE 
+
+groups <- c(quo(df[1]))  #THIS SPECIFIES THAT WE'RE GROUPING BY THE FIRST COLUMN OF THE DATA FRAME - THE PATIENT ID
+
+for (i in seq_along(groups)) { 
+  
+  
+  
+  BPV_indices_all <- df %>% 
+    group_by(!!groups[[i]]) %>% 
+
+
+    summarise(sd_sbp_all = sd(SBP, na.rm = T),
+              mean_sbp_all  = mean(SBP, na.rm = T),
+              coefva_sbp_all = sd_sbp_all/mean_sbp_all,
+              median_sbp_all = median(SBP, na.rm = T),
+              sd_dbp_all = sd(DBP, na.rm = T), 
+              mean_dbp_all = mean(DBP, na.rm = T), 
+              coefva_dbp_all = sd_dbp_all/mean_dbp_all,
+              median_dbp_all = median(DBP, na.rm = T),
+              sd_pulse_all = sd(PULSE, na.rm = T), 
+              mean_pulse_all = mean(PULSE, na.rm = T),
+              coefva_pulse_all = sd_pulse_all/mean_pulse_all,
+              median_pulse_all = median(PULSE, na.rm = T),
+              arv_sbp_all = arv_function(SBP),
+              arv_dbp_all = arv_function(DBP), 
+              arv_pulse_all = arv_function(PULSE),
+              number_of_measurements_all = length(na.omit(SBP)))  #RETURNS THE MEAN, MEDIAN, SD, CV, ARV AND NUMBER OF MEASUREMENTS IN A DATAFRAME 
+
+
+    
+}
+```
+
+
+```{r}
+df_Day = df[df$`DAY/NIGHT`=='D',]
+df_Night = df[df$`DAY/NIGHT`=='N',] #CREATES TWO NEW DATAFRAMES CONTAINING ONLY DAY AND NIGHT MEASUREMENTS RESPECTIVELY. WE THEN TAKE THESE TWO DATAFRAMES, AND RUN THE SAME PROCESS AS THE CHUNK BEFORE, GENERATING TWO NEW BPV INDICES DATAFRAMES FOR DAY AND NIGHT MEASUREMENTS 
+```
+
+```{r}
+groups_day = c(quo(df_Day[1]))
+for (i in seq_along(groups_day)) {
+  
+  BPV_indices_day <- df_Day %>% 
+    group_by(!!groups_day[[i]]) %>% # Unquote with !!
+    
+    summarise(sd_sbp_day = sd(SBP, na.rm = T),
+              mean_sbp_day  = mean(SBP, na.rm = T),
+              coefva_sbp_day = sd_sbp_day/mean_sbp_day,
+              median_sbp_day = median(SBP, na.rm = T),
+              sd_dbp_day = sd(DBP, na.rm = T), 
+              mean_dbp_day = mean(DBP, na.rm = T), 
+              coefva_dbp_day = sd_dbp_day/mean_dbp_day,
+              median_dbp_day = median(DBP, na.rm = T),
+              sd_pulse_day = sd(PULSE, na.rm = T), 
+              mean_pulse_day = mean(PULSE, na.rm = T),
+              coefva_pulse_day = sd_pulse_day/mean_pulse_day,
+              median_pulse_day = median(PULSE, na.rm = T),
+              arv_sbp_day = arv_function(SBP),
+              arv_dbp_day = arv_function(DBP),
+              arv_pulse_day = arv_function(PULSE),
+              number_of_measurements_day = length(na.omit(SBP)))
+    
+}
+```
+```{r}
+groups_night = c(quo(df_Night[1]))
+for (i in seq_along(groups_night)) {
+  
+  BPV_indices_night <- df_Night %>% 
+    group_by(!!groups_night[[i]]) %>%
+    
+    summarise(sd_sbp_night = sd(SBP, na.rm = T),
+              mean_sbp_night  = mean(SBP, na.rm = T),
+              coefva_sbp_night = sd_sbp_night/mean_sbp_night, 
+              median_sbp_night = median(SBP, na.rm = T),
+              sd_dbp_night = sd(DBP, na.rm = T), 
+              mean_dbp_night = mean(DBP, na.rm = T), 
+              coefva_dbp_night = sd_dbp_night/mean_dbp_night,
+              median_dbp_night = median(DBP, na.rm = T),
+              sd_pulse_night = sd(PULSE, na.rm = T), 
+              mean_pulse_night = mean(PULSE, na.rm = T),
+              coefva_pulse_night = sd_pulse_night/mean_pulse_night,
+              median_pulse_night = median(PULSE, na.rm = T),
+              arv_sbp_night = arv_function(SBP),
+              arv_dbp_night = arv_function(DBP),
+              arv_pulse_night = arv_function(PULSE),
+              number_of_measurements_night = length(na.omit(SBP)))
+    
+}
+
+```
+
+
+
+
+```{r}
+write.csv(BPV_indices_all, 'bpv_indices_all.csv_', row.names = FALSE)
+write.csv(BPV_indices_day, 'bpv_indices_day.csv', row.names = FALSE)
+write.csv(BPV_indices_night, 'bpv_indices_night.csv', row.names = FALSE) #CREATES 3 FILES WHICH CAN BE OPENED IN EXCEL, WHERE THE INFORMATION CAN EASILY BE COPIED AND PASTED INTO THE BPV_INDICES_RESULTS DATASHEET. I'D SUGGEST EDITING THE FILE NAMES WITH AN ADDED NOTE OF WHAT PATIENTS - E.G., CS OR BTX OR MRI
+```
+

@@ -1,0 +1,44 @@
+```{r}
+dataload <- MRI_SCI_001_D
+df <- na.omit(dataload)
+```
+
+
+```{r}
+#code for average real variability
+average <- rep(0,ncol(df))
+average <- setNames(average, c('meanSBP',  'meanDBP', 'meanpulse'))
+stdev <- rep(0,ncol(df))
+stdev <- setNames(stdev, c('sdSBP', 'sdDBP', 'sdpulse'))
+coefva <- rep(0,ncol(df))
+coefva <- setNames(coefva, c('cvSBP', 'cvDBP', 'cvpulse'))
+arv <- rep(0,ncol(df))
+arv <- setNames(arv, c('arvSBP', 'arvDBP', 'arvpulse'))
+
+dfcolumn <- 1
+for (h in df){
+  average[dfcolumn] = mean(h)
+  stdev[dfcolumn] = sd(h)
+  coefva[dfcolumn] = sd(h)/mean(h)
+  
+  sum_of_absolute_differences <- 0 
+  recording_number <- 1
+  for (i in h[2:(length(h))]){
+    sum_of_absolute_differences = sum_of_absolute_differences + (abs(i - h[recording_number]))
+    recording_number = recording_number + 1
+  }
+  arv[dfcolumn] = sum_of_absolute_differences/length(h)
+  dfcolumn = dfcolumn +1
+}
+
+
+print(average)
+print(stdev)
+print(coefva)
+print(arv)
+
+
+```
+
+
+

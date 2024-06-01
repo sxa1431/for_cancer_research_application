@@ -1,0 +1,128 @@
+---
+title: "Statistical Comparison"
+output: html_document
+date: "2023-12-22"
+---
+
+```{r}
+library (readr)
+library (dplyr)
+library(ggplot2)
+library(tidyr)
+data <- read.csv("~/Module6/BPV Indices Results edit 1.csv")
+```
+
+## Add column to the imported csv to add information of injury category- paraplegic and teraplegic
+
+```{r cars}
+#Adding a column with values paraplegic and tetraplegic category
+data <- data %>% mutate(Injury.Category = case_when(
+      substr(Participant.characteristics.NLI, 1, 1) == "C" ~ "tetraplegic",
+      TRUE ~ "paraplegic"))
+
+```
+
+## Selecting columns with mean data for SBP, DBP and Pulse and Plotting
+
+```{r}
+
+#Reshape data for plotting Mean SBP
+data_mean_sbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Mean.SBP"))
+ggplot(data_mean_sbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "Mean SBP", title = "Comparison of Mean SBP by Injury Category") +
+  theme_minimal()
+
+
+#Reshape data for plotting Mean DBP
+data_mean_dbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Mean.DBP"))
+ggplot(data_mean_dbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "Mean DBP", title = "Comparison of Mean DBP by Injury Category") +
+  theme_minimal()
+
+
+#Reshape data for plotting Mean Pulse
+data_mean_pulse <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Mean.PULSE"))
+ggplot(data_mean_pulse, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "Mean Pulse", title = "Comparison of Mean Pulse by Injury Category") +
+  theme_minimal()
+
+
+```
+## Selecting columns with SD data for SBP, DBP and Pulse and Plotting
+
+```{r}
+#Reshape data for plotting SD SBP
+data_sd_sbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Standard.Deviation.SBP"))
+ggplot(data_sd_sbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "SD SBP", title = "Comparison of SD SBP by Injury Category") +
+  theme_minimal()
+
+#Reshape data for plotting SD DBP
+data_sd_dbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Standard.Deviation.DBP"))
+ggplot(data_sd_dbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "SD DBP", title = "Comparison of SD DBP by Injury Category") +
+  theme_minimal()
+
+#Reshape data for plotting SD Pulse
+data_sd_pulse <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Standard.Deviation.PULSE"))
+ggplot(data_sd_pulse, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "SD Pulse", title = "Comparison of SD pulse by Injury Category") +
+  theme_minimal()
+```
+
+
+## Selecting columns with CoV data for SBP, DBP and Pulse and Plotting
+```{r}
+
+#Reshape data for plotting CoV SBP
+data_cov_sbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Coefficient.of.Variation.SBP"))
+ggplot(data_cov_sbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "CoV SBP", title = "Comparison of CoV SBP by Injury Category") +
+  theme_minimal()
+
+#Reshape data for plotting CoV DBP
+data_cov_dbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Coefficient.of.Variation.DBP"))
+ggplot(data_cov_dbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "CoV DBP", title = "Comparison of CoV DBP by Injury Category") +
+  theme_minimal()
+
+#Reshape data for plotting CoV Pulse
+data_cov_pulse <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Coefficient.of.Variation.PULSE"))
+ggplot(data_cov_pulse, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "CoV Pulse", title = "Comparison of CoV Pulse by Injury Category") +
+  theme_minimal()
+```
+## Selecting columns with ARV data for SBP, DBP and Pulse and Plotting
+```{r}
+
+#Reshape data for plotting ARV SBP
+data_arv_sbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Average.Real.Variability.SBP"))
+ggplot(data_arv_sbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "ARV SBP", title = "Comparison of ARV SBP by Injury Category") +
+  theme_minimal()
+
+#Reshape data for plotting ARV DBP
+data_arv_dbp <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Average.Real.Variability.DBP"))
+ggplot(data_arv_dbp, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "ARV DBP", title = "Comparison of ARV DBP by Injury Category") +
+  theme_minimal()
+
+#Reshape data for plotting ARV Pulse
+data_arv_pulse <- tidyr::gather(data, key = "Variable", value = "Value", starts_with("Average.Real.Variability.PULSE"))
+ggplot(data_arv_pulse, aes(x = Injury.Category, y = Value, fill = Variable)) +
+  geom_boxplot() +
+  labs(x = "Injury Category", y = "ARV Pulse", title = "Comparison of ARV Pulse by Injury Category") +
+  theme_minimal()
+
+```
